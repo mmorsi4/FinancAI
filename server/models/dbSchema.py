@@ -58,9 +58,9 @@ class Finance(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-class UserTransaction(db.Model):
+class UserTransactions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), index=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id', ondelete='CASCADE'), index=True, nullable=False)
     amount = db.Column(db.Integer, nullable=False)
     category = db.Column(db.String(100), nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
@@ -68,9 +68,9 @@ class UserTransaction(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-class BusinessTransaction(db.Model):
+class BusinessTransactions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    business_id = db.Column(db.Integer, db.ForeignKey('business.id', ondelete='CASCADE'), index=True, nullable=False)
+    business_id = db.Column(db.Integer, db.ForeignKey('Business.id', ondelete='CASCADE'), index=True, nullable=False)
     amount = db.Column(db.Integer, nullable=False)
     category = db.Column(db.String(100), nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
