@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import NewsCard from "../components/NewsCard";
+import React, { useEffect, useState } from 'react';
+import { ClipLoader } from 'react-spinners';
+import NewsCard from '../components/NewsCard';
 
-const GEMINI_API_KEY = "AIzaSyBPiUWys8Y7V4-Gi4gHr99VyCwFJSy3Dog";
+const GEMINI_API_KEY = 'AIzaSyBPiUWys8Y7V4-Gi4gHr99VyCwFJSy3Dog';
 const systemPrompt = `
   Generate a JSON-formatted list of the latest news articles with the following details:
   - Title
@@ -25,6 +26,8 @@ interface NewsItem {
 
 const Home: React.FC = () => {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -32,34 +35,40 @@ const Home: React.FC = () => {
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
           {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              contents: [{ parts: [{ text: systemPrompt }] }]
+              contents: [{ parts: [{ text: systemPrompt }] }],
             }),
           }
         );
+
+        if (!response.ok) throw new Error('Failed to fetch news');
+
         const data = await response.json();
-        console.log("Raw API Response:", data);
+        console.log('Raw API Response:', data);
 
-        const textResponse = data?.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
-        console.log("Extracted Text:", textResponse);
+        const textResponse = data?.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
+        console.log('Extracted Text:', textResponse);
 
-        const cleanJson = textResponse.replace(/```json|```/g, "").trim();
-        console.log("Cleaned JSON:", cleanJson);
+        const cleanJson = textResponse.replace(/```json|```/g, '').trim();
+        console.log('Cleaned JSON:', cleanJson);
 
         setNewsItems(
           JSON.parse(cleanJson).map((item: any) => ({
             title: item.Title,
             description: item.Description,
-            imageUrl: "https://i.imgur.com/Y9Z0Zys.png",
+            imageUrl: 'https://i.imgur.com/Y9Z0Zys.png',
             category: item.Category,
             date: item.Date,
-            source_link: item.Source_link
+            source_link: item.Source_link,
           }))
         );
-      } catch (error) {
-        console.error("Error fetching news from Gemini:", error);
+      } catch (err) {
+        console.error('Error fetching news from Gemini:', err);
+        setError('Failed to load news. Please try again later.');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -67,40 +76,50 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative bg-indigo-800 text-white">
-      <div className="absolute inset-0">
+    <div className='relative bg-indigo-800 text-white min-h-screen'>
+      <div className='absolute inset-0'>
         <img
-          src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
-          alt="Finance background"
-          className="w-full h-full object-cover opacity-30"
+          src='https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80'
+          alt='Finance background'
+          className='w-full h-full object-cover opacity-30'
         />
       </div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="max-w-3xl">
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl mb-6">
+      <div className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24'>
+        <div className='max-w-3xl'>
+          <h1 className='text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl mb-6'>
             Smart Financial Management
           </h1>
-          <p className="text-xl text-indigo-100 max-w-xl">
+          <p className='text-xl text-indigo-100 max-w-xl'>
             Take control of your finances with AI-powered insights. Track expenses, manage assets,
             and make informed decisions to achieve your financial goals.
           </p>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {newsItems.map((item, index) => (
-          <NewsCard
-            key={index}
-            title={item.title}
-            description={item.description}
-            imageUrl={item.imageUrl}
-            category={item.category}
-            date={item.date}
-            source_link={item.source_link}
-          />
-        ))}
+
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+        {loading ? (
+          <div className='col-span-3 flex justify-center py-16'>
+            <ClipLoader size={50} color='#ffffff' />
+          </div>
+        ) : error ? (
+          <p className='col-span-3 text-center text-red-500'>{error}</p>
+        ) : (
+          newsItems.map((item, index) => (
+            <NewsCard
+              key={index}
+              title={item.title}
+              description={item.description}
+              imageUrl={item.imageUrl}
+              category={item.category}
+              date={item.date}
+              source_link={item.source_link}
+            />
+          ))
+        )}
       </div>
     </div>
   );
 };
 
 export default Home;
+

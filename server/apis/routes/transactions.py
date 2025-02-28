@@ -4,7 +4,7 @@ from apis.routes.Security import session_required
 
 user_transactions_bp = Blueprint('user_transactions_bp', __name__)
 
-@user_transactions_bp.route('/users/<int:user_id>/transactions', methods=['GET'])
+@user_transactions_bp.route('/users/transactions', methods=['GET'])
 @session_required
 def get_user_transactions(user_id):
     transactions = UserTransactions.query.filter_by(user_id=user_id).all()

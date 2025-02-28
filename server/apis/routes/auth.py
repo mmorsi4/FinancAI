@@ -13,6 +13,7 @@ import jwt
 import uuid  # for auto-generating unique IDs
 import requests
 import os
+import secrets
 
 SECRET_KEY = secrets.token_hex(32)
 # Initialize blueprint and utilities

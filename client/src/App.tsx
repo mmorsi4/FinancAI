@@ -1,18 +1,8 @@
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  BarChart3,
-  DollarSign,
-  LineChart,
-  PieChart,
-  TrendingUp,
-  Wallet,
-} from 'lucide-react';
-import React, { useState } from 'react';
+import { BarChart3 } from 'lucide-react';
+import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import ChatBot from './components/ChatBot';
 import Navbar from './components/Navbar';
-import NewsCard from './components/NewsCard';
 import Assets from './pages/Assets';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
