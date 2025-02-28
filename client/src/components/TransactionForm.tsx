@@ -39,31 +39,68 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onAddTransaction, onC
     ],
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
 
+  //   if (!title || !amount || !category || !date) {
+  //     alert('Please fill in all required fields');
+  //     return;
+  //   }
+
+  //   const newTransaction: Transaction = {
+  //     id: Date.now(),
+  //     title,
+  //     description,
+  //     amount: parseFloat(amount),
+  //     type,
+  //     category,
+  //     date: new Date(date).toLocaleDateString('en-US', {
+  //       year: 'numeric',
+  //       month: 'long',
+  //       day: 'numeric',
+  //     }),
+  //   };
+
+  //   onAddTransaction(newTransaction);
+  // };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
     if (!title || !amount || !category || !date) {
       alert('Please fill in all required fields');
       return;
     }
-
-    const newTransaction: Transaction = {
-      id: Date.now(),
+  
+    const newTransaction = {
       title,
       description,
       amount: parseFloat(amount),
       type,
       category,
-      date: new Date(date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }),
+      date,
     };
-
-    onAddTransaction(newTransaction);
+  
+    try {
+      const response = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newTransaction),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to add transaction');
+      }
+  
+      const data = await response.json();
+      onAddTransaction(data);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error adding transaction');
+    }
   };
-
+  
   return (
     <div>
       <div className='flex justify-between items-center mb-4'>
