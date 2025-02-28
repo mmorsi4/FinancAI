@@ -40,3 +40,4 @@ def get_users():
     users = User.query.all()
     users_list = [{'id': user.id, 'username': user.username, 'birthdate': user.birthdate.strftime('%Y-%m-%d')} for user in users]
     return jsonify(users_list), 200
+    
