@@ -1,12 +1,4 @@
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  BarChart3,
-  DollarSign,
-  LineChart,
-  TrendingUp,
-  Wallet,
-} from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, DollarSign, TrendingUp, Wallet } from 'lucide-react';
 import React from 'react';
 import {
   Area,
@@ -15,7 +7,6 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -23,32 +14,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-
-// import AssetList from '../components/AssetList';
-import AssetList from '../components/AssetList';
-import TransactionList from '../components/TransactionList';
-
-// interface Transaction {
-//   id: number;
-//   title: string;
-//   description: string;
-//   amount: number;
-//   type: string;
-//   category: string;
-//   date: string;
-// }
-
-// interface Asset {
-//   name: string;
-//   value: number;
-//   color: string;
-// }
-
-// interface MonthlyData {
-//   name: string;
-//   income: number;
-//   expenses: number;
-// }
 
 // Sample transaction data
 const transactions = [
@@ -242,7 +207,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* Income vs Expenses Chart */}
           <div className='lg:col-span-2 bg-white p-6 rounded-lg shadow-md'>
             <h3 className='text-lg font-semibold text-gray-800 mb-4'>Income vs Expenses</h3>

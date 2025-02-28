@@ -9,7 +9,7 @@ from flask_bcrypt import Bcrypt
 from models.dbSchema import db
 
 # Import blueprints from respective modules
-from apis.routes.auth import auth_bp, 
+from apis.routes.auth import auth_bp
 from apis.routes.search import search_bp
 from apis.routes.user import  user_bp, user_bp1              ## users -> gets users.. user_bp -> adds a user
 from apis.routes.transactions import user_transactions_bp

@@ -1,4 +1,3 @@
-import { Plus } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import TransactionList from '../components/TransactionList';
 
@@ -30,3 +29,4 @@ const Transactions: React.FC = () => {
 };
 
 export default Transactions;
+

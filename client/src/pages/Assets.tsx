@@ -1,15 +1,35 @@
-import { Plus } from 'lucide-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AssetList from '../components/AssetList';
 
-const assets = [
-  { name: 'Stocks', value: 45000, color: '#4F46E5' },
-  { name: 'Real Estate', value: 120000, color: '#10B981' },
-  { name: 'Crypto', value: 15000, color: '#F59E0B' },
-  { name: 'Cash', value: 25000, color: '#6366F1' },
-];
+const API_URL = 'https://your-api.com/assets';
 
 const Assets: React.FC = () => {
+  const [assets, setAssets] = useState<{ name: string; value: number; color: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAssets = async () => {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+          throw new Error('Failed to fetch assets');
+        }
+        const data = await response.json();
+        setAssets(data);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAssets();
+  }, []);
+
+  if (loading) return <p>Loading assets...</p>;
+  if (error) return <p className='text-red-500'>Error: {error}</p>;
+
   return <AssetList assets={assets} />;
 };
 

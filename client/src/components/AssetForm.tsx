@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Asset {
   name: string;
@@ -16,17 +16,9 @@ const AssetForm: React.FC<AssetFormProps> = ({ onAddAsset, onCancel }) => {
   const [name, setName] = useState('');
   const [value, setValue] = useState('');
   const [color, setColor] = useState('#4F46E5');
-
-  const assetTypes = [
-    'Stocks',
-    'Real Estate',
-    'Crypto',
-    'Cash',
-    'Bonds',
-    'Gold',
-    'Retirement',
-    'Other',
-  ];
+  const [assetTypes, setAssetTypes] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const colorOptions = [
     '#4F46E5',
@@ -39,21 +31,32 @@ const AssetForm: React.FC<AssetFormProps> = ({ onAddAsset, onCancel }) => {
     '#14B8A6',
   ];
 
+  useEffect(() => {
+    const fetchAssetTypes = async () => {
+      try {
+        const response = await fetch('/api/assets/types'); // Adjust API endpoint
+        if (!response.ok) throw new Error('Failed to fetch asset types');
+
+        const data = await response.json();
+        setAssetTypes(data);
+      } catch (err) {
+        setError('Could not load asset types.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAssetTypes();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!name || !value) {
       alert('Please fill in all required fields');
       return;
     }
 
-    const newAsset: Asset = {
-      name,
-      value: parseFloat(value),
-      color,
-    };
-
-    onAddAsset(newAsset);
+    onAddAsset({ name, value: parseFloat(value), color });
   };
 
   return (
@@ -71,19 +74,25 @@ const AssetForm: React.FC<AssetFormProps> = ({ onAddAsset, onCancel }) => {
             <label htmlFor='asset-type' className='block text-sm font-medium text-gray-700'>
               Asset Type *
             </label>
-            <select
-              id='asset-type'
-              value={name}
-              onChange={e => setName(e.target.value)}
-              className='mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-              required>
-              <option value=''>Select asset type</option>
-              {assetTypes.map(type => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
+            {loading ? (
+              <p className='text-gray-500'>Loading asset types...</p>
+            ) : error ? (
+              <p className='text-red-500'>{error}</p>
+            ) : (
+              <select
+                id='asset-type'
+                value={name}
+                onChange={e => setName(e.target.value)}
+                className='mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                required>
+                <option value=''>Select asset type</option>
+                {assetTypes.map(type => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div>
