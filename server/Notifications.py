@@ -7,7 +7,7 @@ class ResponseHandler:
             "This method should be overridden in subclasses")
 
 
-class CharityResponseHandler(ResponseHandler):
+class bankResponseHandler(ResponseHandler):
     def handle(self, action):
         if action == "missing_fields":
             return {"message": "Missing required fields for the charity.", "status": "error"}
@@ -45,8 +45,8 @@ class PasswordResponseHandler(ResponseHandler):
 
 
 class fundsWithdrawalHandler(ResponseHandler):
-    def handle(self, attended):
-        if attended == "camp_attend":
+    def handle(self, drawn):
+        if drawn == "funds_drawn":
             return {"message": "You have successfully withdrawn funds.", "status": "success"}
         return {"message": "Insufficient funds to withdraw", "status": "error"}
 
@@ -80,9 +80,9 @@ class SearchResponseHandler(ResponseHandler):
         return {"message": "Unknown search error.", "status": "error"}
 
 
-class AdminCampaignResponseHandler(ResponseHandler):
+class AdminArticleResponseHandler(ResponseHandler):
     def handle(self, action):
-        return {"message": f"Admin has performed {action} on a campaign.", "status": "success"}
+        return {"message": f"Admin has performed {action} on an Article.", "status": "success"}
 
 
 class AdminUserResponseHandler(ResponseHandler):
@@ -103,49 +103,20 @@ class UserResponseHandler(ResponseHandler):
         return {"message": "User not found.", "status": "error"}
 
 
-class ShopResponseHandler:
-    def __init__(self):
-        self.messages = {
-            "no_products": "No products found in the shop.",
-            "missing_fields": "Missing required fields for the product.",
-            "invalid_price": "Invalid price. It must be a positive number.",
-            "duplicate_product": "Product with the same name already exists.",
-            "product_added": "Product added successfully to the shop.",
-            "add_product_error": "An error occurred while adding the product."
-        }
-
-    def handle(self, action):
-        if action not in self.messages:
-            return jsonify({"message": "Unknown shop error.", "status": "error"})
-
-        status = "success" if "added" in action or action == "product_added" else "error"
-        return jsonify({"message": self.messages[action], "status": status})
-
 
 class ErrorProcessor:
     def __init__(self):
         self.error_map = {
-            "charity_follow":            lambda:  CharityResponseHandler      ().handle("followed"),
-            "charity_unfollow":          lambda:  CharityResponseHandler      ().handle("unfollowed"),
-            "charity_register":          lambda:  CharityResponseHandler      ().handle("registered"),
-            "charity_unregister":        lambda:  CharityResponseHandler      ().handle("unregistered"),
-            "charity_invalid_input":     lambda:  CharityResponseHandler      ().handle("invalid_input"),
-            "charity_missing_fields":    lambda:  CharityResponseHandler      ().handle("missing_fields"),
-            "charity_exists":            lambda name:  CharityResponseHandler ().handle("exists"),
-            "charity_id_exists":         lambda id:  CharityResponseHandler   ().handle("id_exists"),
-            "charity_id_required":       lambda:  CharityResponseHandler      ().handle("id_required"),
-            "charity_not_found":         lambda:  CharityResponseHandler      ().handle("not_found"),
-            "already_following_charity": lambda:  CharityResponseHandler      ().handle("already_following_charity"),
-            "campaign_follow":           lambda:  CampaignResponseHandler     ().handle("followed"),
-            "campaign_unfollow":         lambda:  CampaignResponseHandler     ().handle("unfollowed"),
-            "campaign_register":         lambda:  CampaignResponseHandler     ().handle("registered"),
-            "campaign_unregister":       lambda:  CampaignResponseHandler     ().handle("unregistered"),
-            "campaign_attended":         lambda:  CampaignAttendanceHandler   ().handle("camp_attend"),
-            "campaign_not_attended":     lambda:  CampaignAttendanceHandler   ().handle("camp_not_attend"),
-            "campaign_not_found":        lambda:  CampaignResponseHandler     ().handle("camp_not_found"),
-            "campaign_id_missing":       lambda:  CampaignResponseHandler     ().handle("camp_id_missing"),
-            "campaign_full":             lambda:  CampaignResponseHandler     ().handle("camp_full"),
-            "removal_success":           lambda:  CampaignResponseHandler     ().handle("removal_success"),
+            "charity_follow":            lambda:  bankResponseHandler         ().handle("followed"),
+            "charity_unfollow":          lambda:  bankResponseHandler         ().handle("unfollowed"),
+            "charity_register":          lambda:  bankResponseHandler         ().handle("registered"),
+            "charity_unregister":        lambda:  bankResponseHandler         ().handle("unregistered"),
+            "charity_invalid_input":     lambda:  bankResponseHandler         ().handle("invalid_input"),
+            "charity_missing_fields":    lambda:  bankResponseHandler         ().handle("missing_fields"),
+            "charity_exists":            lambda name:  bankResponseHandler    ().handle("exists"),
+            "charity_id_exists":         lambda id:  bankResponseHandler      ().handle("id_exists"),
+            "charity_id_required":       lambda:  bankResponseHandler         ().handle("id_required"),
+            "charity_not_found":         lambda:  bankResponseHandler         ().handle("not_found"),
             "login_success":             lambda:  LoginResponseHandler        ().handle("success"),
             "login_invalid":             lambda:  LoginResponseHandler        ().handle("invalid"),
             "login_server_issue":        lambda:  LoginResponseHandler        ().handle("server_issue"),
@@ -154,38 +125,19 @@ class ErrorProcessor:
             "signup_invalid_password":   lambda:  SignupResponseHandler       ().handle("invalid_password"),
             "search_success":            lambda:  SearchResponseHandler       ().handle("success"),
             "search_invalid":            lambda:  SearchResponseHandler       ().handle("invalid_search"),
-            "admin_campaign_create":     lambda:  AdminCampaignResponseHandler().handle("create"),
-            "admin_campaign_read":       lambda:  AdminCampaignResponseHandler().handle("read"),
-            "admin_campaign_update":     lambda:  AdminCampaignResponseHandler().handle("update"),
-            "admin_campaign_delete":     lambda:  AdminCampaignResponseHandler().handle("delete"),
-            "admin_user_update":         lambda:  AdminUserResponseHandler    ().handle("update (points)"),
-            "admin_user_delete":         lambda:  AdminUserResponseHandler    ().handle("delete (bad behaviour)"),
-            "shop_no_products":          lambda:  ShopResponseHandler         ().handle("no_products"),
-            "shop_missing_fields":       lambda:  ShopResponseHandler         ().handle("missing_fields"),
-            "shop_invalid_price":        lambda:  ShopResponseHandler         ().handle("invalid_price"),
-            "shop_duplicate_product":    lambda:  ShopResponseHandler         ().handle("duplicate_product"),
-            "shop_product_added":        lambda:  ShopResponseHandler         ().handle("product_added"),
-            "shop_add_product_error":    lambda:  ShopResponseHandler         ().handle("add_product_error"),
+            # "admin_campaign_create":     lambda:  AdminCampaignResponseHandler().handle("create"),
+            # "admin_campaign_read":       lambda:  AdminCampaignResponseHandler().handle("read"),
+            # "admin_campaign_update":     lambda:  AdminCampaignResponseHandler().handle("update"),
+            # "admin_campaign_delete":     lambda:  AdminCampaignResponseHandler().handle("delete"),
+            # "admin_user_update":         lambda:  AdminUserResponseHandler    ().handle("update (points)"),
+            # "admin_user_delete":         lambda:  AdminUserResponseHandler    ().handle("delete (bad behaviour)"),        
+            # we should probably make an admin dashobard to add new articles from and manage users..
             "user_found":                lambda:  UserResponseHandler         ().handle("user_found"),
             "user_not_found":            lambda:  UserResponseHandler         ().handle("user_not_found"),
             "user_id_required":          lambda:  UserResponseHandler         ().handle("user_id_required"),
             "user_already_registered":   lambda:  UserResponseHandler         ().handle("user_already_registered"),
             "user_not_registered":       lambda:  UserResponseHandler         ().handle("user_not_registered"),
-            "campaign_follow":           lambda:  CampaignResponseHandler     ().handle("followed"),
-            "campaign_unfollow":         lambda:  CampaignResponseHandler     ().handle("unfollowed"),
-            "campaign_register":         lambda:  CampaignResponseHandler     ().handle("registered"),
-            "campaign_unregister":       lambda:  CampaignResponseHandler     ().handle("unregistered"),
-            "campaign_attended":         lambda:  CampaignAttendanceHandler   ().handle("camp_attend"),
-            "campaign_not_attended":     lambda:  CampaignAttendanceHandler   ().handle("camp_not_attend"),
-            "campaign_not_found":        lambda:  CampaignResponseHandler     ().handle("camp_not_found"),
-            "login_success":             lambda:  LoginResponseHandler        ().handle("success"),
-            "login_invalid":             lambda:  LoginResponseHandler        ().handle("invalid"),
-            "login_server_issue":        lambda:  LoginResponseHandler        ().handle("server_issue"),
-            "signup_success":            lambda:  SignupResponseHandler       ().handle("success"),
-            "signup_invalid_email":      lambda:  SignupResponseHandler       ().handle("invalid_email"),
-            "signup_invalid_password":   lambda:  SignupResponseHandler       ().handle("invalid_password"),
             "email_missing":             lambda:  PasswordResponseHandler     ().handle("email_missing"),
-            "user_not_found":            lambda:  PasswordResponseHandler     ().handle("user_not_found"),
             "reset_invalid_data":        lambda:  PasswordResponseHandler     ().handle("reset_invalid_data"),
             "reset_invalid_password":    lambda:  PasswordResponseHandler     ().handle("reset_invalid_password"),
             "reset_token_expired":       lambda:  PasswordResponseHandler     ().handle("reset_token_expired"),
@@ -194,24 +146,7 @@ class ErrorProcessor:
             "change_invalid_data":       lambda:  PasswordResponseHandler     ().handle("change_invalid_data"),
             "password_incorrect":        lambda:  PasswordResponseHandler     ().handle("password_incorrect"),
             "password_change_success":   lambda:  PasswordResponseHandler     ().handle("password_change_success"),
-            "search_success":            lambda:  SearchResponseHandler       ().handle("success"),
-            "search_invalid":            lambda:  SearchResponseHandler       ().handle("invalid_search"),
-            "admin_campaign_create":     lambda:  AdminCampaignResponseHandler().handle("create"),
-            "admin_campaign_read":       lambda:  AdminCampaignResponseHandler().handle("read"),
-            "admin_campaign_update":     lambda:  AdminCampaignResponseHandler().handle("update"),
-            "admin_campaign_delete":     lambda:  AdminCampaignResponseHandler().handle("delete"),
-            "admin_user_update":         lambda:  AdminUserResponseHandler    ().handle("update (points)"),
-            "admin_user_delete":         lambda:  AdminUserResponseHandler    ().handle("delete (bad behaviour)"),
-            "shop_no_products":          lambda:  ShopResponseHandler         ().handle("no_products"),
-            "shop_missing_fields":       lambda:  ShopResponseHandler         ().handle("missing_fields"),
-            "shop_invalid_price":        lambda:  ShopResponseHandler         ().handle("invalid_price"),
-            "shop_duplicate_product":    lambda:  ShopResponseHandler         ().handle("duplicate_product"),
-            "shop_product_added":        lambda:  ShopResponseHandler         ().handle("product_added"),
-            "shop_add_product_error":    lambda:  ShopResponseHandler         ().handle("add_product_error"),
-            "user_found":                lambda:  UserResponseHandler         ().handle("user_found"),
-            "user_not_found":            lambda:  UserResponseHandler         ().handle("user_not_found"),
-            "user_id_required":          lambda:  UserResponseHandler         ().handle("user_id_required"),
-        }
+            }
 
     def process_error(self, error, name=None, id=None):
         if id:

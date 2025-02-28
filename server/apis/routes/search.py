@@ -12,7 +12,7 @@ def search_article():
     name = request.args.get('title', '').strip().lower()
 
     if not name:
-        return jsonify(Notifications.process_error("search_invalid_name")), 400
+        return jsonify(Notifications.process_error("search_invalid")), 400
 
     # Add regex for partial search
     regex_name = f"%{name}%"
@@ -25,7 +25,7 @@ def search_article():
     charities = charities.all()
 
     if not charities:
-        return jsonify(Notifications.process_error("search_no_results")), 404
+        return jsonify(Notifications.process_error("search_invalid")), 404
 
     # Serialize charities into JSON
     json_articles = [
@@ -63,4 +63,4 @@ def get_Article(Article_id):
             "description": Article.description,
         }), 200
 
-    return jsonify({"error": "Charity not found"}), 404
+    return jsonify({"error": "Article not found"}), 404

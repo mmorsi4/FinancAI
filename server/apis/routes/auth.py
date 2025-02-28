@@ -119,7 +119,7 @@ def login():
         password = request.json.get('userPass')
 
         if not email or not password:
-            return jsonify(Notifications.process_error("login_invalid_fields")), 400
+            return jsonify(Notifications.process_error("login_invalid")), 400
 
         user = User.query.filter_by(email=email).first()
         if user is None:
