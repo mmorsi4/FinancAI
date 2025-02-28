@@ -1,66 +1,67 @@
 from flask import Blueprint, request, jsonify
-from models.dbSchema import Charity, Campaign
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from apis.routes.Security import session_required
 from models.Notifications import ErrorProcessor
+from models.dbSchema import Article
 
 search_bp = Blueprint('search', __name__)
 Notifications = ErrorProcessor()
+db = SQLAlchemy()
 
-@search_bp.route('/article', methods=['GET'])  # route is /search/article
+@search_bp.route('/article', methods=['GET'])  # Route: /search/article
 @session_required
 def search_article():
-    name = request.args.get('title', '').strip().lower()
+    title = request.args.get('title', '').strip().lower()
 
-    if not name:
+    if not title:
         return jsonify(Notifications.process_error("search_invalid")), 400
 
-    # Add regex for partial search
-    regex_name = f"%{name}%"
+    # Perform case-insensitive search with partial match
+    regex_title = f"%{title}%"
+    articles = Article.query.filter(Article.title.ilike(regex_title)).all()
 
-    # Query charities with optional category filtering
-    charities = Article.query.filter(Article.name.ilike(regex_name))
-    if category:
-        charities = charities.filter(Article.category == category)
-
-    charities = charities.all()
-
-    if not charities:
+    if not articles:
         return jsonify(Notifications.process_error("search_invalid")), 404
 
-    # Serialize charities into JSON
     json_articles = [
         {
-            "id": Article.id,
-            "title": Article.title,
-            "description": Article.description,
-        } for Article in charities
+            "id":          article.id,
+            "title":       article.title,
+            "description": article.description,
+            "image":       article.image,
+            "created_at":  article.created_at.isoformat(),
+            "updated_at":  article.updated_at.isoformat() if article.updated_at else None
+        }              for article in articles
     ]
 
-    return jsonify(json_charities), 200
+    return jsonify(json_articles), 200
 
-@search_bp.route('/charities', methods=['GET'])
-def get_charties():
-    charities = Article.query.all()
-    json_charities = [
+@search_bp.route('/articles', methods=['GET'])
+def get_articles():
+    articles = Article.query.all()
+    json_articles = [
         {
-            "id": Article.id,
-            "title": Article.title,
-            "description": Article.description,
-
-        } for Article in charities
+            "id": article.id,
+            "title": article.title,
+            "description": article.description,
+            "image": article.image,
+            "created_at": article.created_at.isoformat(),
+            "updated_at": article.updated_at.isoformat() if article.updated_at else None
+        } for article in articles
     ]
 
-    return jsonify(json_charities), 200
+    return jsonify(json_articles), 200
 
+@search_bp.route('/articles/<int:article_id>', methods=['GET'])
+def get_article(article_id):
+    article = Article.query.get_or_404(article_id, description="Article not found")
 
-@search_bp.route('/charities/<int:Article_id>', methods=['GET'])
-def get_Article(Article_id):
-    Article = Article.query.filter_by(id=Article_id).first()
-    if Article:
-        return jsonify({
-            "id": Article.id,
-            "title": Article.title,
-            "description": Article.description,
-        }), 200
-
-    return jsonify({"error": "Article not found"}), 404
+    return jsonify({
+        "id": article.id,
+        "title": article.title,
+        "description": article.description,
+        "image": article.image,
+        "created_at": article.created_at.isoformat(),
+        "updated_at": article.updated_at.isoformat() if article.updated_at else None
+    }), 200

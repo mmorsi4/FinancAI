@@ -9,7 +9,7 @@ from flask_bcrypt import Bcrypt
 from models.dbSchema import db
 
 # Import blueprints from respective modules
-from apis.routes.auth_login import auth_bp, oauth_bp
+from apis.routes.auth import auth_bp, oauth_bp
 from apis.routes.search import search_bp
 from apis.routes.user import  user_bp, users               ## users -> gets users.. user_bp -> adds a user
 from apis.routes.transactions import user_transactions_bp
@@ -32,13 +32,12 @@ def create_app():
 
     # blueprints
     app.register_blueprint(auth_bp,              url_prefix= '/auth'  )
-    app.register_blueprint(search_bp,            url_prefix= '/search')
     app.register_blueprint(oauth_bp,             url_prefix= '/oauth' )
     app.register_blueprint(user_bp,              url_prefix= '/users' )     #adds a user
     app.register_blueprint(users,                url_prefix= '/users' )     #gets all users (filter by id if needed)
     app.register_blueprint(user_transactions_bp, url_prefix= '/users/<int:user_id>/transactions')
     app.register_blueprint(assets_bp,            url_prefix= '/assets' )
-
+    app.register_blueprint(search_bp,            url_prefix= '/articles')
     ##fefa    
     
 
