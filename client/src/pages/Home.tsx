@@ -6,10 +6,11 @@ const systemPrompt = `
   Generate a JSON-formatted list of the latest news articles with the following details:
   - Title
   - Description
-  - Image URL
-  - Category
+  - Field
   - Date
-  The news should be diverse, covering various topics such as Science, Technology, Politics, Health, Sports, and Arts.
+  - Category
+  - Source_link
+  Search online. Find actual news. REAL news. Google the article name and return the GOOGLE link here. It must serve as competitive intel for the current business. The current business has the industry: 'Restaurant'
   Respond only with a valid JSON array.
 `;
 
@@ -19,6 +20,7 @@ interface NewsItem {
   imageUrl: string;
   category: string;
   date: string;
+  source_link: string;
 }
 
 const Home: React.FC = () => {
@@ -50,9 +52,10 @@ const Home: React.FC = () => {
           JSON.parse(cleanJson).map((item: any) => ({
             title: item.Title,
             description: item.Description,
-            imageUrl: item["Image URL"],
+            imageUrl: "https://i.imgur.com/Y9Z0Zys.png",
             category: item.Category,
             date: item.Date,
+            source_link: item.Source_link
           }))
         );
       } catch (error) {
@@ -92,6 +95,7 @@ const Home: React.FC = () => {
             imageUrl={item.imageUrl}
             category={item.category}
             date={item.date}
+            source_link={item.source_link}
           />
         ))}
       </div>
