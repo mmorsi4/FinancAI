@@ -125,7 +125,7 @@ class ErrorProcessor:
             "signup_invalid_password":   lambda:  SignupResponseHandler       ().handle("invalid_password"),
             "search_success":            lambda:  SearchResponseHandler       ().handle("success"),
             "search_invalid":            lambda:  SearchResponseHandler       ().handle("invalid_search"),
-            # "admin_campaign_create":     lambda:  AdminCampaignResponseHandler().handle("create"),
+            "admin_user_create":     lambda:  AdminUserResponseHandler().handle("create"),
             # "admin_campaign_read":       lambda:  AdminCampaignResponseHandler().handle("read"),
             # "admin_campaign_update":     lambda:  AdminCampaignResponseHandler().handle("update"),
             # "admin_campaign_delete":     lambda:  AdminCampaignResponseHandler().handle("delete"),
