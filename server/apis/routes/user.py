@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify
-from models import db, User
+from models.dbSchema import db, User
 from datetime import datetime
 from apis.routes.Security import session_required
 from models.Notifications import ErrorProcessor
 user_bp = Blueprint('user_bp', __name__)
+user_bp1 = Blueprint('user_bp1', __name__)
 
 @user_bp.route('/users', methods=['POST'])
 @session_required
@@ -34,7 +35,7 @@ def add_user():
     return jsonify(Notifications.process_error("admin_user_create")), 200
 
 
-@user_bp.route('/users', methods=['GET'])
+@user_bp1.route('/getUsers', methods=['GET'])
 @session_required
 def get_users():
     users = User.query.all()

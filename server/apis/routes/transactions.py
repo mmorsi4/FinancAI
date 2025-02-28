@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, UserTransactions
+from models.dbSchema import db, UserTransactions
 from apis.routes.Security import session_required
 
 user_transactions_bp = Blueprint('user_transactions_bp', __name__)

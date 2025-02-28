@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Asset, AssetType
+from models.dbSchema import db, Asset, AssetType
 from apis.routes.Security import session_required
 
 assets_bp = Blueprint('assets_bp', __name__)
