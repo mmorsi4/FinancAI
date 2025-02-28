@@ -32,3 +32,11 @@ def add_user():
     db.session.commit()
     
     return jsonify(Notifications.process_error("admin_user_create")), 200
+
+
+@user_bp.route('/users', methods=['GET'])
+@session_required
+def get_users():
+    users = User.query.all()
+    users_list = [{'id': user.id, 'username': user.username, 'birthdate': user.birthdate.strftime('%Y-%m-%d')} for user in users]
+    return jsonify(users_list), 200
